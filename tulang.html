@@ -1,0 +1,117 @@
+---
+layout: page
+title: آموزش اسمبلی
+permalink: /tulang/
+name_img: language.png
+---
+<h2>گرفتن و نمایش عدد در 8086</h2>
+<p>
+<pre Pre style="direction: ltr">
+org 100h
+
+	;for get number and show on the screen
+	;ذخیره میکند  ax عددی را که از کاربر میگیرد در قسمت کم ارزش ثبات
+	mov ah,01h
+	int 21h
+
+
+	;for get number but dont show on the screen
+	;ذخیره میکند  ax عددی را که از کاربر میگیرد در قسمت کم ارزش ثبات
+	;mov ah,08h
+	;int 21h
+
+
+	;print number on the screen
+	;هر مقداری را که داخل دی ال قرار دهیم  روی صفحه نمایش نشان میدهد
+	mov ah,02h
+	mov dl,'k'
+	int 21h 
+
+
+	;print number on the screen
+	;this function may not be supported in graphics mode
+	;mov al,'5'
+	;mov ah,0eh
+	;int 10h
+ret
+</pre>
+</p>
+<h2> گرفتن عدد و با عدد 3 جمع کردن</h2>
+<p >
+<Pre style="direction: ltr">
+org 100h
+jmp start
+    num db ?  ;تعریف متغییر
+   
+start:
+  	    
+	mov ah,01h   ;گرفتن عدد  
+	int 21h
+	mov num,al
+	;عددی را که از کاربر دریافت میکند 30 در مبنای 16 به آن اضافه میکند یعنی وقتی ما عدد یک را وارد میکنیم 
+	;عدد 49 را در متغییر ذخیره میکند که بعدا برای اینکه عدد به ارزش واقعی برسد 30 در مبنای 16 از آن کم میکنیم
+	;و بعد که عدد به ارزش واقعی خود رسید عمل جمع را انجام میدهیم  
+	sub num,30h 
+	add num,3
+	;برای نشان دادن روی صفحه باید  30 در مبنای 16 به آن اضافه شود 
+	;مثلا برای نشان دادن عدد 1 روی صفحه باید عدد 50در متغییر دی ال قرار بگیرد 
+	add num,30h
+	
+	;برای نمایش محتوای دی ال روی صفحه
+	mov ah,02h
+	mov dl,num
+	int 21h
+ret
+</pre>
+</p>
+<h2> گرفتن و چاپ عدد دو رقمی</h2>
+<p >
+<Pre style="direction: ltr">
+org 100h
+
+jmp start
+    
+    num db ? 
+    ten db 10
+
+start:
+	; گرفتن عدد اول و آن را به ارزش واقعی میرسانیم
+    mov ah,08h
+    int 21h
+    sub al,30h
+    	; در عدد 10ضرب میشود ونتیجه در متغییر قرار میگیرد
+    mul ten
+    mov num,al
+    	;گرفتن عدد دوم و آن را به ارزش واقعی میرسانیم و با عدد اول که در 10 ضرب شده جمع میشود
+    mov ah,08h
+    int 21h
+    sub al,30h
+    
+    add al,num
+    mov ah,0
+    	;برای نمایش عدد دو رقمی مثلا 15 روی صفحه عدد را تقسیم به 10 میکنیم 
+    div ten
+    	;و خارج قسمت را که در آ ال  و باقی مانده را که در آ  اچ قرار میگیرد 30 در مبنای 16 به آن اضافه میکنیم
+    add al,30h
+    add ah,30h
+    
+	;ثبات را به ثبات دیگری منتقل میکنیم
+    mov cx,ax
+    	;ابتدا خارج قسمت را روی صفحه نمایش میدهیم 
+    mov ah,02h
+    mov dl,cl
+    int 21h
+    	;و حالا باقی مانده را
+    mov ah,02h
+    mov dl,ch
+    int 21h 
+    
+ret
+
+
+
+
+
+</pre>
+</p>
+
